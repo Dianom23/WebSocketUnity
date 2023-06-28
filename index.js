@@ -1,33 +1,40 @@
-// const express = require("express");
-// const app = express()
-// const http = require("http").Server(app)
-// const io = require("socket.io")(http)
-
-// const PORT = 3000
-
-// io.on("connection", socket=>{
-//     console.log("add")
-// })
-// io.on("me")
-
-// http.listen(PORT, () => {
-//     console.log(`Listening on port ${PORT}`);
-//   });
 const  WebSocket = require("ws")
 const wss = new WebSocket.Server({port: 3000}, ()=>{
   console.log("Start")
 })
-//const socket = new WebSocket('ws://localhost:3000');
 wss.on("listening", ()=>{
   console.log("server listen port 3000")
 })
 
+
+
 wss.on("connection", ws=>{
+
+  setInterval(()=>{
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send("Кека");
+      }
+    });
+    //ws.emit("msg", "Привет")
+  }, 3000)
+
   ws.on("message", data=>{
     console.log(data.toString())
     ws.send(data.toString())
+    wss.emit("msg", data.toString())
+  })
+  
+  
+  // setInterval(()=>{
+  //   wss.emit("msg", "Hello")
+  // }, 5000)
+  ws.on("msg", data=>{
+    console.log(data.toString())
   })
 })
+
+
 
 
 // socket.onopen = function(event) {
